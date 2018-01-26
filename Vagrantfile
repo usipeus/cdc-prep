@@ -11,28 +11,49 @@ Vagrant.configure("2") do |config|
   end
 
   # configure dns box using ubuntu 12.04x64
-  config.vm.define :ccdc_dns do |ccdc_dns_config|
-    ccdc_dns_config.vm.box = "hashicorp/precise64"
+  config.vm.define :dns do |dns_config|
+    dns_config.vm.box = "hashicorp/precise64"
   
-    ccdc_dns_config.vm.hostname = "dns"
+    dns_config.vm.hostname = "dns"
   
-    ccdc_dns_config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh", disabled: "true"
-    ccdc_dns_config.vm.network "forwarded_port", guest: 22, host: 2345, host_ip: "127.0.0.1"
+    dns_config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh", disabled: "true"
+    dns_config.vm.network "forwarded_port", guest: 22, host: 2345, host_ip: "127.0.0.1"
   
-    # ccdc_dns_config.ssh.username = ""
-    ccdc_dns_config.ssh.host = "127.0.0.1"
-    ccdc_dns_config.ssh.port = 2345
-    ccdc_dns_config.ssh.guest_port = 22
+    # dns_config.ssh.username = ""
+    dns_config.ssh.host = "127.0.0.1"
+    dns_config.ssh.port = 2345
+    dns_config.ssh.guest_port = 22
   
-    ccdc_dns_config.vm.network "private_network", ip: "192.160.50.10"
+    dns_config.vm.network "private_network", ip: "192.168.50.10"
   
-    ccdc_dns_config.vm.synced_folder "./shared", "/vagrant_shared"
+    dns_config.vm.synced_folder "./shared", "/vagrant_shared"
   
-    ccdc_dns_config.vm.provider "virtualbox" do |vb|
+    dns_config.vm.provider "virtualbox" do |vb|
       vb.gui = false
-      vb.name = "ccdc_dns"
+      vb.name = "cdc_dns"
       vb.memory = "512"
     end
+
+    # provision dns box
+
+    # run common script to everything
+    dns_config.vm.provision "shell", path: "./provision/common_provision.sh"
+    dns_config.vm.provision "shell", path: "./provision/dns/provision.sh"
+
+    # update to set to IPv4
+    dns_config.vm.provision "file", source: "./provision/dns/bind9", destination: "$HOME/bind9"
+
+    # set various bind9 options
+    dns_config.vm.provision "file", source: "./provision/dns/named.conf.options", destination: "$HOME/named.conf.options"
+
+    # set local file
+    dns_config.vm.provision "file", source: "./provision/dns/named.conf.local", destination: "$HOME/named.conf.local"
+
+    # copy zone information
+    dns_config.vm.provision "file", source: "./provision/dns/zones", destination: "$HOME/zones"
+
+    # reload bind
+    dns_config.vm.provision "shell", path: "./provision/dns/finish.sh"
 
   end
 

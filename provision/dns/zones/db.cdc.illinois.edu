@@ -1,0 +1,18 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	dns.cdc.illinois.edu. admin.cdc.illinois.edu. (
+			      3		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+
+; NS records
+	IN	NS	dns.cdc.illinois.edu.
+
+; A records
+dns.cdc.illinois.edu.	IN	A	192.168.50.10
+web.cdc.illinois.edu.	IN	A	192.168.50.11
+

@@ -1,0 +1,18 @@
+;
+; BIND reverse data file for broadcast zone
+;
+$TTL	604800
+@	IN	SOA	dns.cdc.illinois.edu. admin.cdc.illinois.edu. (
+			      2		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+
+; NS records
+	IN	NS	dns.cdc.illinois.edu.
+
+; PTR records
+10	IN	PTR	dns.cdc.illinois.edu.
+11	IN	PTR	web.cdc.illinois.edu.
+
