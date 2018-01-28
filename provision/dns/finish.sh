@@ -6,8 +6,10 @@ sudo mv bind9 /etc/default/
 sudo mv named.conf.options /etc/bind/
 sudo mv named.conf.local /etc/bind/
 sudo mv zones /etc/bind/
+sudo mv sshd_config /etc/ssh/sshd_config
 
 sudo service bind9 restart
+sudo service ssh restart
 
 # configue dns server
 echo "search cdc.illinois.edu" | sudo tee /etc/resolvconf/resolv.conf.d/head

