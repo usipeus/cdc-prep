@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # copy files
 cd /home/vagrant
@@ -7,9 +7,13 @@ sudo mv named.conf.options /etc/bind/
 sudo mv named.conf.local /etc/bind/
 sudo mv zones /etc/bind/
 sudo mv sshd_config /etc/ssh/sshd_config
+sudo mv crontab /etc/crontab
 
 sudo service bind9 restart
 sudo service ssh restart
+
+sudo chown root:root /etc/crontab
+sudo chmod a+x /etc/crontab
 
 # configue dns server
 echo "search cdc.illinois.edu" | sudo tee /etc/resolvconf/resolv.conf.d/head

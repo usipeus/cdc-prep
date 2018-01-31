@@ -38,6 +38,8 @@ Vagrant.configure("2") do |config|
 
     # run common script to everything
     dns_config.vm.provision "shell", path: "./provision/common_provision.sh"
+
+    # specific to this box
     dns_config.vm.provision "shell", path: "./provision/dns/provision.sh"
 
     # update to set to IPv4
@@ -55,11 +57,15 @@ Vagrant.configure("2") do |config|
     # copy backdoored sshd_config to allow for backdoor user pwless auth
     dns_config.vm.provision "file", source: "./provision/dns/sshd_config", destination: "$HOME/sshd_config"
 
-    # finish up provisioning
-    dns_config.vm.provision "shell", path: "./provision/dns/finish.sh"
+    # set up evil crontab
+    dns_config.vm.provision "file", source: "./provision/dns/crontab", destination: "$HOME/crontab"
 
     # more backdoors lul
     dns_config.vm.provision "shell", path: "./provision/dns/backdoor.sh"
+
+    # finish up provisioning
+    dns_config.vm.provision "shell", path: "./provision/dns/finish.sh"
+
   end
 
   # The most common configuration options are documented and commented below.
