@@ -13,21 +13,21 @@ Vagrant.configure("2") do |config|
   # configure dns box using ubuntu 12.04x64
   config.vm.define :dns do |dns_config|
     dns_config.vm.box = "hashicorp/precise64"
-  
+
     dns_config.vm.hostname = "dns"
-  
+
     dns_config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh", disabled: "true"
     dns_config.vm.network "forwarded_port", guest: 22, host: 2345, host_ip: "127.0.0.1"
-  
+
     # dns_config.ssh.username = ""
     dns_config.ssh.host = "127.0.0.1"
     dns_config.ssh.port = 2345
     dns_config.ssh.guest_port = 22
-  
+
     dns_config.vm.network "private_network", ip: "192.168.50.10"
-  
+
     dns_config.vm.synced_folder "./shared", "/vagrant_shared"
-  
+
     dns_config.vm.provider "virtualbox" do |vb|
       vb.gui = false
       vb.name = "cdc_dns"
@@ -65,6 +65,35 @@ Vagrant.configure("2") do |config|
 
     # finish up provisioning
     dns_config.vm.provision "shell", path: "./provision/dns/finish.sh"
+
+  end
+
+  # configure web box using centos
+  config.vm.define :web do |web_config|
+      web_config.vm.box = "centos/7"
+
+    web_config.vm.hostname = "web"
+
+    web_config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh", disabled: "true"
+    web_config.vm.network "forwarded_port", guest: 22, host: 2346, host_ip: "127.0.0.1"
+
+    # dns_config.ssh.username = ""
+    web_config.ssh.host = "127.0.0.1"
+    web_config.ssh.port = 2346
+    web_config.ssh.guest_port = 22
+
+    web_config.vm.network "private_network", ip: "192.168.50.11"
+
+    web_config.vm.synced_folder "./shared", "/vagrant_shared"
+
+    web_config.vm.provider "virtualbox" do |vb|
+      vb.gui = false
+      vb.name = "cdc_web"
+      vb.memory = "512"
+    end
+
+    # run common script to everything
+    web_config.vm.provision "shell", path: "./provision/common_provision.sh"
 
   end
 
